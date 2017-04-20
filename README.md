@@ -1,4 +1,4 @@
-MiniLoot
+SavedInstance
 ==================
 base on https://mods.curse.com/addons/wow/saved_instances Author:oscarucb,jokeyrhyme
 
