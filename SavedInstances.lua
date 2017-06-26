@@ -2929,25 +2929,26 @@ function core:RefreshDailyWorldQuestInfo()
     local title = GetQuestLogTitle(GetQuestLogIndexByID(BountyInfo.questID))
     local timeleft = C_TaskQuest.GetQuestTimeLeftMinutes(BountyInfo.questID)
     local _, _, isFinish, questDone, questNeed = GetQuestObjectiveInfo(BountyInfo.questID, 1, false)
-    if timeleft == nil then print(BountyInfo.questID..timeleft) end
-    if timeleft > 2880 then
-      t.DailyWorldQuest.days2 = {}
-      t.DailyWorldQuest.days2.name = title
-      t.DailyWorldQuest.days2.dayleft = 2
-      t.DailyWorldQuest.days2.questneed = questNeed
-      t.DailyWorldQuest.days2.questdone = questDone
-    elseif timeleft > 1440 then
-      t.DailyWorldQuest.days1 = {}
-      t.DailyWorldQuest.days1.name = title
-      t.DailyWorldQuest.days1.dayleft = 1
-      t.DailyWorldQuest.days1.questneed = questNeed
-      t.DailyWorldQuest.days1.questdone = questDone
-    else
-      t.DailyWorldQuest.days0 = {}
-      t.DailyWorldQuest.days0.name = title
-      t.DailyWorldQuest.days0.dayleft = 0
-      t.DailyWorldQuest.days0.questneed = questNeed
-      t.DailyWorldQuest.days0.questdone = questDone
+    if timeleft then
+      if timeleft > 2880 then
+        t.DailyWorldQuest.days2 = {}
+        t.DailyWorldQuest.days2.name = title
+        t.DailyWorldQuest.days2.dayleft = 2
+        t.DailyWorldQuest.days2.questneed = questNeed
+        t.DailyWorldQuest.days2.questdone = questDone
+      elseif timeleft > 1440 then
+        t.DailyWorldQuest.days1 = {}
+        t.DailyWorldQuest.days1.name = title
+        t.DailyWorldQuest.days1.dayleft = 1
+        t.DailyWorldQuest.days1.questneed = questNeed
+        t.DailyWorldQuest.days1.questdone = questDone
+      else
+        t.DailyWorldQuest.days0 = {}
+        t.DailyWorldQuest.days0.name = title
+        t.DailyWorldQuest.days0.dayleft = 0
+        t.DailyWorldQuest.days0.questneed = questNeed
+        t.DailyWorldQuest.days0.questdone = questDone
+      end
     end
   end
 end
