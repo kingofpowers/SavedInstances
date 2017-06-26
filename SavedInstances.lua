@@ -150,6 +150,11 @@ addon.LFRInstances = {
   [1291] ={ total=3, base=4,  parent=1353,altid=nil }, -- NH2: Royal Athenaeum 
   [1292] ={ total=3, base=7,  parent=1353,altid=nil }, -- NH3: Nightspire
   [1293] ={ total=1, base=10, parent=1353,altid=nil }, -- NH4: Betrayer's Rise
+  
+  [1494] ={ total=3, base=1,  parent=1527,altid=nil }, -- ToS1: The Gates of Hell
+  [1495] ={ total=3, base=4,  parent=1527,altid=nil }, -- ToS2: Wailing Halls
+  [1496] ={ total=2, base=7,  parent=1527,altid=nil }, -- ToS3: Chamber of the Avatar
+  [1497] ={ total=1, base=9,  parent=1527,altid=nil }, -- ToS4: Deceiver's Fall
 }
 local tmp = {}
 for id, info in pairs(addon.LFRInstances) do
@@ -195,6 +200,10 @@ addon.WorldBosses = {
   [1790] = { quest=43512, expansion=6, level=110 }, -- Ana-Mouz
   [1795] = { quest=43985, expansion=6, level=110 }, -- Flotsam
   [1796] = { quest=44287, expansion=6, level=110 }, -- Withered Jim
+  [1956] = { quest=47061, expansion=6, level=110 }, -- Apacron
+  [1883] = { quest=46947, expansion=6, level=110 }, -- Brutallus
+  [1884] = { quest=46948, expansion=6, level=110 }, -- Malificus
+  [1885] = { quest=46945, expansion=6, level=110 }, -- Sivash
 
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },
@@ -228,6 +237,7 @@ local _specialQuests = {
   -- Order Hall
   [42517] = { zid=1050, daily=true }, -- Warlock: Ritual of Doom
   [44707] = { zid=1052, daily=true, sid=228651 }, -- Demon Hunter: Twisting Nether
+  [47040] = { zid=1021, daily=true }, -- daily coin
 }
 function addon:specialQuests()
   for qid, qinfo in pairs(_specialQuests) do
@@ -305,6 +315,24 @@ local QuestExceptions = {
   [33134] = "Regular",  -- Warforged Seals
   [33338] = "Weekly",  -- Empowering the Hourglass
   [33334] = "Weekly",  -- Strong Enough to Survive
+	
+	-- From Archmage Timear - 
+  [44164] = "Weekly", -- A Burning Path Through Time - Burning Crusade Timewalking
+  [44166] = "Weekly", -- A Frozen Path Through Time - Wrath of the Lich King Timewalking
+  [44167] = "Weekly", -- A Shattered Path Through Time - Cataclysm Timewalking
+  [44171] = "Weekly", -- Emisary of War - Complete Legion Mythics
+  [44172] = "Weekly", -- The Arena Calls - Win Legion Arena Skirmishes
+  [44173] = "Weekly", -- A Call to Battle - Win Battlegrounds
+  [44174] = "Weekly", -- The Very Best - Win PvP Pet Battles
+  [44175] = "Weekly", -- The World Awaits - Complete Broken Isles World Quests
+  [45799] = "Weekly", -- A Shrouded Path Through Time - Mists of Pandaria Timewalking
+	
+	--Timewalking Dungeon final boss drops
+  [40168] = "Weekly", -- The Swirling Vial - Burning Crusade Timewalking
+  [40173] = "Weekly", -- The Unstable Prism - Wrath of the Lich King Timewalking
+  [40786] = "Weekly", -- The Smoldering Ember - Cataclysm Timewalking - Horde
+  [40787] = "Weekly", -- The Smoldering Ember - Cataclysm Timewalking - Alliance
+  [45563] = "Weekly", -- The Shrouded Coin - Mists of Pandaria Timewalking
 }
 
 local WoDSealQuests = {
@@ -1045,7 +1073,7 @@ end
 
 -- provide either id or name/raid to get the instance truename and db entry
 function addon:LookupInstance(id, name, raid)
-  --debug("LookupInstance("..(id or "nil")..","..(name or "nil")..","..(raid and "true" or "false")..")")
+  debug("LookupInstance("..(id or "nil")..","..(name or "nil")..","..(raid and "true" or "false")..")")
   local truename, instance
   if name then
     truename, id = addon:FindInstance(name, raid)
@@ -1396,7 +1424,7 @@ function addon:UpdateInstanceData()
   local wbid_to_name = {}
   local id_blacklist = {}
   local starttime = debugprofilestop()
-  local maxid = 1500
+  local maxid = 1800
   -- previously we used GetFullRaidList() and LFDDungeonList to help populate the instance list
   -- Unfortunately those are loaded lazily, and forcing them to load from here can lead to taint.
   -- They are also somewhat incomplete, so instead we just brute force it, which is reasonably fast anyhow
@@ -1505,7 +1533,7 @@ end
 --if LFDParentFrame then hooksecurefunc(LFDParentFrame,"Show",function() addon:UpdateInstanceData() end) end
 function addon:UpdateInstance(id)
   -- returns: <instance_name>, <is_new_instance>, <blacklisted_id>
-  --debug("UpdateInstance: "..id)
+  -- debug("UpdateInstance: "..id)
   if not id or id <= 0 then return end
   local name, typeID, subtypeID, 
         minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, 
@@ -2846,19 +2874,19 @@ function core:RefreshMythicKeyInfo()
 	local color
 	_,_,_,color = GetItemQualityColor(0)
 	if mapLevel >= 10 then
-	  if KeyInfo[20] == "1" then
+	  if KeyInfo[7] == "1" then
 	    _,_,_,color = GetItemQualityColor(4)
 	  end
 	elseif mapLevel >= 7 then
-	  if KeyInfo[19] == "1" then
+	  if KeyInfo[6] == "1" then
 	    _,_,_,color = GetItemQualityColor(3)
 	  end
 	elseif mapLevel >= 4 then
-	  if KeyInfo[18] == "1" then
+	  if KeyInfo[5] == "1" then
 	    _,_,_,color = GetItemQualityColor(2)
 	  end
 	else
-	  if KeyInfo[17] == "1" then
+	  if KeyInfo[4] == "1" then
 	    _,_,_,color = GetItemQualityColor(1)
 	  end
 	end
@@ -2901,7 +2929,7 @@ function core:RefreshDailyWorldQuestInfo()
     local title = GetQuestLogTitle(GetQuestLogIndexByID(BountyInfo.questID))
     local timeleft = C_TaskQuest.GetQuestTimeLeftMinutes(BountyInfo.questID)
     local _, _, isFinish, questDone, questNeed = GetQuestObjectiveInfo(BountyInfo.questID, 1, false)
-    --print(BountyInfo.questID..timeleft)
+    if timeleft == nil then print(BountyInfo.questID..timeleft) end
     if timeleft > 2880 then
       t.DailyWorldQuest.days2 = {}
       t.DailyWorldQuest.days2.name = title
@@ -5008,7 +5036,9 @@ function core:BonusRollResult(event, rewardType, rewardLink, rewardQuantity, rew
   end
   local roll = { name = bossname, time = now, currencyID = BonusRollFrame.currencyID }
   if rewardType == "money" then
-    roll.money = rewardQuantity
+  	roll.money = rewardQuantity
+  elseif rewardType == "artifact_power" then
+	roll.money = 25 -- need change
   elseif rewardType == "item" then
     roll.item = rewardLink
   end
