@@ -101,6 +101,7 @@ local currency = {
   1275,-- Curious Coin
   1314,-- Lingering Soul Fragment
   1342,-- Legionfall War Supplies
+  1508,-- Veiled Argunite
 }
 addon.currency = currency
 
@@ -1461,7 +1462,7 @@ function addon:UpdateInstanceData()
   for eid,info in pairs(addon.WorldBosses) do
     info.eid = eid
     if not info.name then
-      info.name = select(2,EJ_GetCreatureInfo(1,eid))
+      info.name = select(1,EJ_GetEncounterInfo(eid))
     end
     info.name = info.name or "UNKNOWN"..eid
     local instance = vars.db.Instances[info.name]
@@ -3414,7 +3415,7 @@ function core:Refresh(recoverdaily)
 		end
 	end
 	for POInum=1,#POIs do
-		if POIs[POInum] == POIid then
+		if POIs[POInum] == GIP_POI then
 			canLoot = true
 		end
 	end
