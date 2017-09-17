@@ -165,6 +165,15 @@ for id, info in pairs(addon.LFRInstances) do
 end
 addon.LFRInstances = tmp
 
+addon.GreaterInvasionPoint = {
+  [5381] = 2010,
+  [5375] = 2011,
+  [5379] = 2012,
+  [5376] = 2013,
+  [5380] = 2014,
+  [5377] = 2015,
+}
+
 addon.WorldBosses = {
   -- encounter index is embedded in the Hjournal hyperlink
   [691] = { quest=32099, expansion=4, level=90 }, -- Sha of Anger
@@ -205,6 +214,12 @@ addon.WorldBosses = {
   [1884] = { quest=46948, expansion=6, level=110 }, -- Malificus
   [1885] = { quest=46945, expansion=6, level=110 }, -- Sivash
 
+  [2010] = { quest=49199, expansion=6, level=110 }, -- Greater Invasion Point: Matron Folnuna
+  [2011] = { quest=48620, expansion=6, level=110 }, -- Greater Invasion Point: Mistress Alluradel
+  [2012] = { quest=49198, expansion=6, level=110 }, -- Greater Invasion Point: Inquisitor Meto
+  [2013] = { quest=49195, expansion=6, level=110 }, -- Greater Invasion Point: Occularus
+  [2014] = { quest=49197, expansion=6, level=110 }, -- Greater Invasion Point: Sotanathor
+  [2015] = { quest=49196, expansion=6, level=110 }, -- Greater Invasion Point: Pit Lord Vilemus
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=100 },
 }
@@ -3378,7 +3393,7 @@ function core:Refresh(recoverdaily)
 	    end
 	  end
 	end
-
+	
         local questcomplete = GetQuestsCompleted(localarr("QuestCompleteTemp"))
 	local wbsave = localarr("wbsave")
 	if GetNumSavedWorldBosses and GetSavedWorldBossInfo then -- 5.4
@@ -3387,11 +3402,28 @@ function core:Refresh(recoverdaily)
 	    wbsave[name] = true
 	  end
 	end
-        for _,einfo in pairs(addon.WorldBosses) do
+	local GIP_POI = nil
+	local GIP_EJ = nil
+	local POIs = C_WorldMap.GetAreaPOIForMap(1135)
+	local canLoot = false
+	for POIid,eid in pairs(addon.GreaterInvasionPoint) do
+		POIinfo = C_WorldMap.GetAreaPOIInfo(1135,POIid)
+		if POIinfo.x > 0 then
+			GIP_POI = POIid
+			GIP_EJ = eid
+		end
+	end
+	for POInum=1,#POIs do
+		if POIs[POInum] == POIid then
+			canLoot = true
+		end
+	end
+        for eid,einfo in pairs(addon.WorldBosses) do
            if weeklyreset and (
 	      (einfo.quest and IsQuestFlaggedCompleted(einfo.quest)) or 
 	      (questcomplete and einfo.quest and questcomplete[einfo.quest]) or
-	      wbsave[einfo.savename or einfo.name]
+	      wbsave[einfo.savename or einfo.name] or
+	      (eid == GIP_EJ and not canLoot)
 	      ) then
              local truename = einfo.name
              local instance = vars.db.Instances[truename] 
